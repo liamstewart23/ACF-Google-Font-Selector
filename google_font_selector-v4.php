@@ -73,7 +73,7 @@ class acf_field_google_font_selector extends acf_field
 		));
 
 		$option_fonts = $wpdb->get_col($wpdb->prepare(
-			"SELECT DISTINCT(meta_value) FROM $wpdb->options WHERE option_value LIKE %s",
+			"SELECT DISTINCT(option_value) FROM $wpdb->options WHERE option_value LIKE %s",
 			$font_string
 		));
 
