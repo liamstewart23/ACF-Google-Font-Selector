@@ -124,6 +124,11 @@ class acf_field_google_font_selector extends acf_field
 				else {
 					$variants = ':' . implode( ',', $data['variants'] );
 				}
+
+				if( empty( $data['subsets'] ) ) {
+					$data['subsets'] = array( 'latin' );
+				}
+
 				$subsets[] = array_merge( $data['subsets'] );
 				$fonts[] = $name . $variants;
 			}
