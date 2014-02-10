@@ -129,12 +129,15 @@ class acf_field_google_font_selector extends acf_field
 					$data['subsets'] = array( 'latin' );
 				}
 
-				$subsets[] = array_merge( $data['subsets'] );
+				$subsets = array_merge( $subsets, $data['subsets'] );
+
 				$fonts[] = $name . $variants;
 			}
 		}
 
+
 		$subsets = array_unique( $subsets );
+
 		$subsets = ( !empty( $subsets ) ) ? '?subset=' . implode( ', ', $subsets ) : '';
 		$request = "http://fonts.googleapis.com/css?family=" . implode( '|', $fonts ) . $subsets;
 
