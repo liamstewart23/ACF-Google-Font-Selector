@@ -84,68 +84,74 @@ class acf_field_google_font_selector extends acf_field
 
 		$fonts = array();
 		foreach( $fontmeta as $font ) {
-			$fonts[] = unserialize( $font );
-		}
-
-		$fontlist = array();
-		foreach( $fonts as $font ) {
-			if( !empty( $fontlist[$font['font']] ) ) {
-				$fontlist[$font['font']]['variants'] = ( empty( $fontlist[$font['font']]['variants'] ) ) ? array() : $fontlist[$font['font']]['variants'];
-				$fontlist[$font['font']]['subsets'] = ( empty( $fontlist[$font['font']]['subsets'] ) ) ? array() : $fontlist[$font['font']]['subsets'];
-				$fontlist[$font['font']]['variants'] = array_merge( $fontlist[$font['font']]['variants'], $font['variants'] );
-				$fontlist[$font['font']]['subsets'] = array_merge( $fontlist[$font['font']]['subsets'], $font['subsets'] );
-				$fontlist[$font['font']]['variants'] = array_unique( $fontlist[$font['font']]['variants'] );
-				$fontlist[$font['font']]['subsets'] = array_unique( $fontlist[$font['font']]['subsets'] );
-
-				foreach( $fontlist[$font['font']]['variants'] as $key => $variant ) {
-					if( 'regular' == $variant ) {
-						$fontlist[$font['font']]['variants'][$key] = '400';
-					}
-					if( 'italic' == $variant ) {
-						$fontlist[$font['font']]['variants'][$key] = '400italic';
-					}
-				}
-
-				if( !in_array( 'regular', $fontlist[$font['font']]['variants'] ) ) {
-					$fontlist[$font['font']]['variants'][] = '400';
-				}
-
-			}
-			else {
-				$fontlist[$font['font']] = $font;
+			$meta = unserialize( $font );
+			if( !empty( $meta['font'] ) ) {
+				$fonts[] = $meta;
 			}
 		}
 
-		$fonts = array();
-		$subsets = array();
-		foreach( $fontlist as $name => $data ) {
-			if( !in_array( $name, $this->web_safe ) ) {
-				$name = str_replace( ' ', '+', $name );
-				if( empty( $data['variants'] ) ) {
-					$variants = ':300,400,400italic,700';
+		if( !empty( $fonts ) ) {
+
+			$fontlist = array();
+
+			foreach( $fonts as $font ) {
+				if( !empty( $fontlist[$font['font']] ) ) {
+					$fontlist[$font['font']]['variants'] = ( empty( $fontlist[$font['font']]['variants'] ) ) ? array() : $fontlist[$font['font']]['variants'];
+					$fontlist[$font['font']]['subsets'] = ( empty( $fontlist[$font['font']]['subsets'] ) ) ? array() : $fontlist[$font['font']]['subsets'];
+					$fontlist[$font['font']]['variants'] = array_merge( $fontlist[$font['font']]['variants'], $font['variants'] );
+					$fontlist[$font['font']]['subsets'] = array_merge( $fontlist[$font['font']]['subsets'], $font['subsets'] );
+					$fontlist[$font['font']]['variants'] = array_unique( $fontlist[$font['font']]['variants'] );
+					$fontlist[$font['font']]['subsets'] = array_unique( $fontlist[$font['font']]['subsets'] );
+
+					foreach( $fontlist[$font['font']]['variants'] as $key => $variant ) {
+						if( 'regular' == $variant ) {
+							$fontlist[$font['font']]['variants'][$key] = '400';
+						}
+						if( 'italic' == $variant ) {
+							$fontlist[$font['font']]['variants'][$key] = '400italic';
+						}
+					}
+
+					if( !in_array( 'regular', $fontlist[$font['font']]['variants'] ) ) {
+						$fontlist[$font['font']]['variants'][] = '400';
+					}
+
 				}
 				else {
-					$variants = ':' . implode( ',', $data['variants'] );
+					$fontlist[$font['font']] = $font;
 				}
-
-				if( empty( $data['subsets'] ) ) {
-					$data['subsets'] = array( 'latin' );
-				}
-
-				$subsets = array_merge( $subsets, $data['subsets'] );
-
-				$fonts[] = $name . $variants;
 			}
+
+			$fonts = array();
+			$subsets = array();
+			foreach( $fontlist as $name => $data ) {
+				if( !in_array( $name, $this->web_safe ) ) {
+					$name = str_replace( ' ', '+', $name );
+					if( empty( $data['variants'] ) ) {
+						$variants = ':300,400,400italic,700';
+					}
+					else {
+						$variants = ':' . implode( ',', $data['variants'] );
+					}
+
+					if( empty( $data['subsets'] ) ) {
+						$data['subsets'] = array( 'latin' );
+					}
+
+					$subsets = array_merge( $subsets, $data['subsets'] );
+
+					$fonts[] = $name . $variants;
+				}
+			}
+
+
+			$subsets = array_unique( $subsets );
+
+			$subsets = ( !empty( $subsets ) ) ? '?subset=' . implode( ', ', $subsets ) : '';
+			$request = "http://fonts.googleapis.com/css?family=" . implode( '|', $fonts ) . $subsets;
+
+			echo "<link href='" . $request . "' rel='stylesheet' type='text/css'>";
 		}
-
-
-		$subsets = array_unique( $subsets );
-
-		$subsets = ( !empty( $subsets ) ) ? '?subset=' . implode( ', ', $subsets ) : '';
-		$request = "http://fonts.googleapis.com/css?family=" . implode( '|', $fonts ) . $subsets;
-
-		echo "<link href='" . $request . "' rel='stylesheet' type='text/css'>";
-
 
 	}
 

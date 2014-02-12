@@ -34,7 +34,10 @@ class acf_field_google_font_selector extends acf_Field
 		$this->defaults = array(
 			'include_web_safe' => true,
 			'default_font' => 'Droid Sans',
-			'interface' => 'advanced'
+			'interface' => 'advanced',
+			'default_value' => array(
+				'font' => ''
+			)
 		);
 
 		parent::__construct();
@@ -80,7 +83,7 @@ class acf_field_google_font_selector extends acf_Field
 		));
 
 		$option_fonts = $wpdb->get_col($wpdb->prepare(
-			"SELECT DISTINCT(meta_value) FROM $wpdb->options WHERE option_value LIKE %s",
+			"SELECT DISTINCT(option_value) FROM $wpdb->options WHERE option_value LIKE %s",
 			$font_string
 		));
 
@@ -88,60 +91,74 @@ class acf_field_google_font_selector extends acf_Field
 
 		$fonts = array();
 		foreach( $fontmeta as $font ) {
-			$fonts[] = unserialize( $font );
-		}
-
-		$fontlist = array();
-		foreach( $fonts as $font ) {
-			if( !empty( $fontlist[$font['font']] ) ) {
-				$fontlist[$font['font']]['variants'] = ( empty( $fontlist[$font['font']]['variants'] ) ) ? array() : $fontlist[$font['font']]['variants'];
-				$fontlist[$font['font']]['subsets'] = ( empty( $fontlist[$font['font']]['subsets'] ) ) ? array() : $fontlist[$font['font']]['subsets'];
-				$fontlist[$font['font']]['variants'] = array_merge( $fontlist[$font['font']]['variants'], $font['variants'] );
-				$fontlist[$font['font']]['subsets'] = array_merge( $fontlist[$font['font']]['subsets'], $font['subsets'] );
-				$fontlist[$font['font']]['variants'] = array_unique( $fontlist[$font['font']]['variants'] );
-				$fontlist[$font['font']]['subsets'] = array_unique( $fontlist[$font['font']]['subsets'] );
-
-				foreach( $fontlist[$font['font']]['variants'] as $key => $variant ) {
-					if( 'regular' == $variant ) {
-						$fontlist[$font['font']]['variants'][$key] = '400';
-					}
-					if( 'italic' == $variant ) {
-						$fontlist[$font['font']]['variants'][$key] = '400italic';
-					}
-				}
-
-				if( !in_array( 'regular', $fontlist[$font['font']]['variants'] ) ) {
-					$fontlist[$font['font']]['variants'][] = '400';
-				}
-
-			}
-			else {
-				$fontlist[$font['font']] = $font;
+			$meta = unserialize( $font );
+			if( !empty( $meta['font'] ) ) {
+				$fonts[] = $meta;
 			}
 		}
 
-		$fonts = array();
-		$subsets = array();
-		foreach( $fontlist as $name => $data ) {
-			if( !in_array( $name, $this->web_safe ) ) {
-				$name = str_replace( ' ', '+', $name );
-				if( empty( $data['variants'] ) ) {
-					$variants = ':300,400,400italic,700';
+		if( !empty( $fonts ) ) {
+
+			$fontlist = array();
+
+			foreach( $fonts as $font ) {
+				if( !empty( $fontlist[$font['font']] ) ) {
+					$fontlist[$font['font']]['variants'] = ( empty( $fontlist[$font['font']]['variants'] ) ) ? array() : $fontlist[$font['font']]['variants'];
+					$fontlist[$font['font']]['subsets'] = ( empty( $fontlist[$font['font']]['subsets'] ) ) ? array() : $fontlist[$font['font']]['subsets'];
+					$fontlist[$font['font']]['variants'] = array_merge( $fontlist[$font['font']]['variants'], $font['variants'] );
+					$fontlist[$font['font']]['subsets'] = array_merge( $fontlist[$font['font']]['subsets'], $font['subsets'] );
+					$fontlist[$font['font']]['variants'] = array_unique( $fontlist[$font['font']]['variants'] );
+					$fontlist[$font['font']]['subsets'] = array_unique( $fontlist[$font['font']]['subsets'] );
+
+					foreach( $fontlist[$font['font']]['variants'] as $key => $variant ) {
+						if( 'regular' == $variant ) {
+							$fontlist[$font['font']]['variants'][$key] = '400';
+						}
+						if( 'italic' == $variant ) {
+							$fontlist[$font['font']]['variants'][$key] = '400italic';
+						}
+					}
+
+					if( !in_array( 'regular', $fontlist[$font['font']]['variants'] ) ) {
+						$fontlist[$font['font']]['variants'][] = '400';
+					}
+
 				}
 				else {
-					$variants = ':' . implode( ',', $data['variants'] );
+					$fontlist[$font['font']] = $font;
 				}
-				$subsets[] = array_merge( $data['subsets'] );
-				$fonts[] = $name . $variants;
 			}
+
+			$fonts = array();
+			$subsets = array();
+			foreach( $fontlist as $name => $data ) {
+				if( !in_array( $name, $this->web_safe ) ) {
+					$name = str_replace( ' ', '+', $name );
+					if( empty( $data['variants'] ) ) {
+						$variants = ':300,400,400italic,700';
+					}
+					else {
+						$variants = ':' . implode( ',', $data['variants'] );
+					}
+
+					if( empty( $data['subsets'] ) ) {
+						$data['subsets'] = array( 'latin' );
+					}
+
+					$subsets = array_merge( $subsets, $data['subsets'] );
+
+					$fonts[] = $name . $variants;
+				}
+			}
+
+
+			$subsets = array_unique( $subsets );
+
+			$subsets = ( !empty( $subsets ) ) ? '?subset=' . implode( ', ', $subsets ) : '';
+			$request = "http://fonts.googleapis.com/css?family=" . implode( '|', $fonts ) . $subsets;
+
+			echo "<link href='" . $request . "' rel='stylesheet' type='text/css'>";
 		}
-
-		$subsets = array_unique( $subsets );
-		$subsets = ( !empty( $subsets ) ) ? '?subset=' . implode( ', ', $subsets ) : '';
-		$request = "http://fonts.googleapis.com/css?family=" . implode( '|', $fonts ) . $subsets;
-
-		echo "<link href='" . $request . "' rel='stylesheet' type='text/css'>";
-
 
 	}
 
@@ -543,6 +560,27 @@ class acf_field_google_font_selector extends acf_Field
 		));
 
 	}
+
+	/*--------------------------------------------------------------------------------------
+	*
+	*	pre_save_field
+	*	- this function is called when saving your acf object. Here you can manipulate the
+	*	field object and it's options before it gets saved to the database.
+	*
+	*	@author Elliot Condon
+	*	@since 2.2.0
+	*
+	*-------------------------------------------------------------------------------------*/
+
+	function pre_save_field($field)
+	{
+		$field['default_value'] = array(
+			'font' => $field['default_font']
+		);
+
+		return parent::pre_save_field($field);
+	}
+
 
 }
 
