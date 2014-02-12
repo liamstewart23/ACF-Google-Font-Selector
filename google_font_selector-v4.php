@@ -28,7 +28,10 @@ class acf_field_google_font_selector extends acf_field
 		$this->defaults = array(
 			'include_web_safe' => true,
 			'default_font' => 'Droid Sans',
-			'interface' => 'advanced'
+			'interface' => 'advanced',
+			'default_value' => array(
+				'font' => ''
+			)
 		);
 
 		parent::__construct();
@@ -483,6 +486,31 @@ class acf_field_google_font_selector extends acf_field
 		));
 
 	}
+
+	/*
+	*  update_field()
+	*
+	*  This filter is appied to the $field before it is saved to the database
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$field - the field array holding all the field options
+	*  @param	$post_id - the field group ID (post_type = acf)
+	*
+	*  @return	$field - the modified field
+	*/
+
+	function update_field($field, $post_id) {
+		$field['default_value'] = array(
+			'font' => $field['default_font']
+		);
+
+		return $field;
+	}
+
+
 
 }
 
