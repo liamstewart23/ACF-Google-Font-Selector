@@ -22,6 +22,7 @@
 
 			var font = $(this).val();
 			var field_name = $(this).data( 'field_name' );
+			var container = $(this).parents( '.acf-google-font-table' );
 
 			$.ajax({
 				url: acfgfs.ajaxurl,
@@ -33,14 +34,14 @@
 					field_name: field_name
 				},
 				beforeSend: function() {
-					$( '.acfgfs-font-variants ul li, .acfgfs-font-charsets ul li' ).remove();
-					$( '.acfgfs-font-variants, .acfgfs-font-charsets' ).addClass( 'loading' );
-					$( '.acfgfs-font-variants .label, .acfgfs-font-charsets .label' ).after( '<span class="acfgfs-loading">'+acfgfs.loading+'</span>' );
+					container.find( '.acfgfs-font-variants ul li, .acfgfs-font-charsets ul li' ).remove();
+					container.find( '.acfgfs-font-variants, .acfgfs-font-charsets' ).addClass( 'loading' );
+					container.find( '.acfgfs-font-variants .label, .acfgfs-font-charsets .label' ).after( '<span class="acfgfs-loading">'+acfgfs.loading+'</span>' );
 				},
 				success : function( results ) {
-					$( '.acfgfs-loading' ).remove();
-					$( '.acfgfs-font-variants ul' ).prepend( results.variants );
-					$( '.acfgfs-font-charsets ul' ).prepend( results.charsets );
+					container.find( '.acfgfs-loading' ).remove();
+					container.find( '.acfgfs-font-variants ul' ).prepend( results.variants );
+					container.find( '.acfgfs-font-charsets ul' ).prepend( results.charsets );
 				},
 			})
 		})
