@@ -36,8 +36,4 @@ function register_fields_google_font_selector() {
 // Action To Include Field Type For ACF4
 add_action('acf/register_fields', 'register_fields_google_font_selector');
 
-
-
-
-
 ?>
