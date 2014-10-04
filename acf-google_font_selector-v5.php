@@ -105,7 +105,7 @@ class acf_field_google_font_selector extends acf_field {
 		*  Create a simple text input using the 'font_size' setting.
 		*/
 		$current_font_family = ( empty( $field['value'] ) ) ? $field['default_font'] : $field['value']['font'];
-		
+
 
 		?>
 		<div class="acfgfs-font-selector">
@@ -214,7 +214,7 @@ class acf_field_google_font_selector extends acf_field {
 
 		return $field;
 	}
-	
+
 	/*
 	*  update_value()
 	*
@@ -316,16 +316,24 @@ class acf_field_google_font_selector extends acf_field {
 	function google_font_enqueue(){
 		$enqueues = get_option( $this->enqueue_fonts_option );
 		$fonts = array();
-		if( !empty( $enqueues ) ) {
-			foreach ( $enqueues as $enqueue ) {
-				$font = get_field( $enqueue, 'options' );
-				if ( empty( $font ) && is_singular() ) {
-					global $post;
-					$font = get_field( $enqueue, $post->ID );
-				}
-
-				$fonts[] = $font;
+		foreach( $enqueues as $enqueue ) {
+			$font = get_field( $enqueue, 'options' );
+			if( empty( $font ) && is_singular() ) {
+				global $post;
+				$font = get_field( $enqueue, $post->ID );
 			}
+
+			if( array_key_exists( $font['font'], $fonts ) ) {
+				$font = array(
+					'font' => $font['font'],
+					'variants' => array_unique( array_merge( $fonts[$font['font']]['variants'], $font['variants'] ) ),
+					'subsets' => array_unique( array_merge( $fonts[$font['font']]['subsets'], $font['subsets'] ) ),
+				);
+			}
+
+			$fonts[$font['font']] = $font;
+		}
+
 			
 			$fonts = array_filter( $fonts );
 			if( !empty( $fonts ) ) {
@@ -353,9 +361,9 @@ class acf_field_google_font_selector extends acf_field {
 				wp_enqueue_style( 'acfgfs-enqueue-fonts', $request );
 			}
 		}
-		
+
 	}
-	
+
 
 }
 
