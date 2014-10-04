@@ -45,6 +45,7 @@ define( 'ACFGFS_REFRESH', 259200 );
 
 = 2.1 =
 * Font requesrs are now merged properly
+* Added field checks and syncing
 
 = 2.0 =
 * Complete rewrite, fonts will need to be set up again

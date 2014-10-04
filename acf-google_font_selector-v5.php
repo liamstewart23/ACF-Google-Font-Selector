@@ -40,6 +40,8 @@ class acf_field_google_font_selector extends acf_field {
 
 		add_action( 'wp_ajax_acfgfs_get_font_details', array( $this, 'action_get_font_details' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'google_font_enqueue' ) );
+		add_filter( 'option_' . $this->enqueue_fonts_option , array( $this, 'validate_fields' ) );
+		add_action( 'transition_post_status', array( $this, 'sync_fields' ), 10, 3 );
 
 	}
 
@@ -334,7 +336,7 @@ class acf_field_google_font_selector extends acf_field {
 			$fonts[$font['font']] = $font;
 		}
 
-			
+
 			$fonts = array_filter( $fonts );
 			if( !empty( $fonts ) ) {
 				$subsets      = array();
@@ -362,6 +364,50 @@ class acf_field_google_font_selector extends acf_field {
 			}
 		}
 
+	}
+
+	function validate_fields( $value ) {
+		if( !empty( $value ) ) {
+			foreach( $value as $i => $field ) {
+				$option = get_field_object( $field, 'option' );
+				$postoption = get_field_object( $field );
+				if( empty( $option['key'] ) && empty( $postoption['key'] ) ) {
+					unset( $value[$i] );
+				}
+			}
+		}
+		return $value;
+	}
+
+	function sync_fields( $new_status, $old_status, $post ) {
+		if( 'publish' != $new_status ) {
+			$fields = get_field_objects( $post->ID );
+			if( !empty( $fields ) ) {
+				$to_remove = array();
+				foreach( $fields as $field ) {
+					$to_remove[] = $field['key'];
+				}
+			}
+			$enqueues = get_option( $this->enqueue_fonts_option );
+			$enqueues = array_diff( $enqueues, $to_remove );
+			update_option( $this->enqueue_fonts_option, $enqueues );
+		}
+
+		if( 'publish' == $new_status ) {
+			$fields = get_field_objects( $post->ID );
+			echo "<pre>"; print_r( $fields ); echo "</pre>";
+			if( !empty( $fields ) ) {
+				$to_add = array();
+				foreach( $fields as $field ) {
+					if( $field['type'] == 'google_font_selector' ) {
+						$to_add[] = $field['key'];
+					}
+				}
+			}
+			$enqueues = get_option( $this->enqueue_fonts_option );
+			$enqueues = array_merge( $enqueues, $to_add );
+			update_option( $this->enqueue_fonts_option, $enqueues );
+		}
 	}
 
 

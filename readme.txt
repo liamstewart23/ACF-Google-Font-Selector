@@ -49,6 +49,7 @@ The `ACFGFS_REFRESH` constant can also be defined, it controls how frequently th
 = 2.1 =
 
 * Font requests are now merged properly
+* Added field checks and syncinc
 
 = 2.0 =
 
