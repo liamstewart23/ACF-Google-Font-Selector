@@ -362,8 +362,6 @@ class acf_field_google_font_selector extends acf_field {
 
 				wp_enqueue_style( 'acfgfs-enqueue-fonts', $request );
 			}
-		}
-
 	}
 
 	function validate_fields( $value ) {
@@ -380,10 +378,10 @@ class acf_field_google_font_selector extends acf_field {
 	}
 
 	function sync_fields( $new_status, $old_status, $post ) {
-		if( 'publish' != $new_status ) {
+		if( 'publish' != $new_status && $old_status != 'new' ) {
+			$to_remove = array();
 			$fields = get_field_objects( $post->ID );
 			if( !empty( $fields ) ) {
-				$to_remove = array();
 				foreach( $fields as $field ) {
 					$to_remove[] = $field['key'];
 				}
@@ -394,10 +392,9 @@ class acf_field_google_font_selector extends acf_field {
 		}
 
 		if( 'publish' == $new_status ) {
+			$to_add = array();
 			$fields = get_field_objects( $post->ID );
-			echo "<pre>"; print_r( $fields ); echo "</pre>";
 			if( !empty( $fields ) ) {
-				$to_add = array();
 				foreach( $fields as $field ) {
 					if( $field['type'] == 'google_font_selector' ) {
 						$to_add[] = $field['key'];
