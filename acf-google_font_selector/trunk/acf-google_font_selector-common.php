@@ -1,12 +1,13 @@
 <?php
 
+/*
+*  Functionality common to both versions
+*/
 class acf_google_font_selector_common {
 
-    var $enqueue_fonts_option;
     var $bonsai_WP_Google_Fonts;
 
     function __construct( $args ) {
-        $this->enqueue_fonts_option = $args['enqueue_fonts_option'];
         $this->bonsai_WP_Google_Fonts =$args['bonsai_WP_Google_Fonts'];
     }
 

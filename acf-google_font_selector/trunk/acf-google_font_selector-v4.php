@@ -6,8 +6,6 @@ class acf_field_google_font_selector extends acf_field {
 	var $settings, // will hold info such as dir / path
 		$defaults; // will hold default field options
 
-	public $enqueue_fonts_option;
-
 
 	/*
 	*  __construct
@@ -20,7 +18,6 @@ class acf_field_google_font_selector extends acf_field {
 
 	function __construct()
 	{
-		$this->enqueue_fonts_option = 'acfgfs_enqueue_fonts_v4';
 		// settings
 		$this->settings = array(
 			'path' => apply_filters('acf/helpers/get_path', __FILE__),
@@ -34,7 +31,6 @@ class acf_field_google_font_selector extends acf_field {
 
 		$this->bonsai_WP_Google_Fonts = new Bonsai_WP_Google_Fonts( $api_key, $refresh, $option_name );
 		$this->common = new acf_google_font_selector_common(array(
-			'enqueue_fonts_option' => $this->enqueue_fonts_option,
 			'bonsai_WP_Google_Fonts' => $this->bonsai_WP_Google_Fonts
 		));
 		$this->name = 'google_font_selector';
@@ -283,41 +279,6 @@ class acf_field_google_font_selector extends acf_field {
 		$new_value['subsets'] = $_POST[$field['key'] . '_subsets'];
 		return $new_value;
 	}
-
-
-	/*
-	*  update_field()
-	*
-	*  This filter is applied to the $field before it is saved to the database
-	*
-	*  @type	filter
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$field - the field array holding all the field options
-	*  @param	$post_id - the field group ID (post_type = acf)
-	*
-	*  @return	$field - the modified field
-	*/
-
-	function update_field( $field, $post_id )
-	{
-		$enqueues = get_option( $this->enqueue_fonts_option );
-		$enqueues = ( empty( $enqueues ) ) ? array() : $enqueues;
-
-		$enqueued = array_search( $field['key'], $enqueues );
-		if( empty( $field['enqueue_font'] ) && $enqueued !== false ) {
-			unset( $enqueues[$enqueued] );
-		}
-		elseif( !empty( $field['enqueue_font'] ) && $enqueued === false ) {
-			$enqueues[] = $field['key'];
-		}
-		update_option( $this->enqueue_fonts_option, $enqueues );
-
-		return $field;
-	}
-
-
 
 
 

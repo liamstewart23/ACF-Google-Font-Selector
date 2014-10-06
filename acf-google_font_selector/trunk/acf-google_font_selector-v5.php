@@ -19,14 +19,12 @@ class acf_field_google_font_selector extends acf_field {
 	*  @return	n/a
 	*/
 	function __construct() {
-		$this->enqueue_fonts_option = 'acfgfs_enqueue_fonts_v5';
 		$api_key = ( defined( 'ACFGFS_API_KEY' ) ) ? ACFGFS_API_KEY : null;
 		$refresh = ( defined( 'ACFGFS_REFRESH' ) ) ? ACFGFS_REFRESH : 259200;
 		$option_name = ( defined( 'ACFGFS_OPTION_NAME' ) ) ? ACFGFS_OPTION_NAME : 'bonsai_wp_google_fonts';
 
 		$this->bonsai_WP_Google_Fonts = new Bonsai_WP_Google_Fonts( $api_key, $refresh, $option_name );
 		$this->common = new acf_google_font_selector_common(array(
-			'enqueue_fonts_option' => $this->enqueue_fonts_option,
 			'bonsai_WP_Google_Fonts' => $this->bonsai_WP_Google_Fonts
 		));
 
@@ -186,37 +184,6 @@ class acf_field_google_font_selector extends acf_field {
 		wp_enqueue_style('acf-input-google_font_selector');
 
 
-	}
-
-	/*
-	*  update_field()
-	*
-	*  This filter is applied to the $field before it is saved to the database
-	*
-	*  @type	filter
-	*  @date	23/01/2013
-	*  @since	3.6.0
-	*
-	*  @param	$field (array) the field array holding all the field options
-	*  @return	$field
-	*/
-
-	function update_field( $field ) {
-
-		$enqueues = get_option( $this->enqueue_fonts_option );
-		$enqueues = ( empty( $enqueues ) ) ? array() : $enqueues;
-
-		$enqueued = array_search( $field['key'], $enqueues );
-		if( empty( $field['enqueue_font'] ) && $enqueued !== false ) {
-			unset( $enqueues[$enqueued] );
-		}
-		elseif( !empty( $field['enqueue_font'] ) && $enqueued === false ) {
-			$enqueues[] = $field['key'];
-		}
-
-		update_option( $this->enqueue_fonts_option, $enqueues );
-
-		return $field;
 	}
 
 	/*
