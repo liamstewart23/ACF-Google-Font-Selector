@@ -453,7 +453,7 @@ class acf_field_google_font_selector extends acf_field {
 
 
 	function sync_fields( $new_status, $old_status, $post ) {
-		if( 'publish' != $new_status ) {
+		if( 'publish' != $new_status && $old_status != 'new' ) {
 			$to_remove = array();
 			$fields = get_field_objects( $post->ID );
 			if( !empty( $fields ) ) {
