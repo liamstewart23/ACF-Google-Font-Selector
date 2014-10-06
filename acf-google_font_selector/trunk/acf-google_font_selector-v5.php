@@ -386,7 +386,7 @@ class acf_field_google_font_selector extends acf_field {
 					$to_remove[] = $field['key'];
 				}
 			}
-			$enqueues = get_option( $this->enqueue_fonts_option );
+			$enqueues = get_option( $this->enqueue_fonts_option, array() );
 			$enqueues = array_diff( $enqueues, $to_remove );
 			update_option( $this->enqueue_fonts_option, $enqueues );
 		}
@@ -401,7 +401,7 @@ class acf_field_google_font_selector extends acf_field {
 					}
 				}
 			}
-			$enqueues = get_option( $this->enqueue_fonts_option );
+			$enqueues = get_option( $this->enqueue_fonts_option, array() );
 			$enqueues = array_merge( $enqueues, $to_add );
 			update_option( $this->enqueue_fonts_option, $enqueues );
 		}
