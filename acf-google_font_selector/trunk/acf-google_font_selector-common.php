@@ -5,12 +5,33 @@
 */
 class acf_google_font_selector_common {
 
+    /*
+    *  Reference to the font handling class
+    */
     var $bonsai_WP_Google_Fonts;
 
+    /*
+    *  Constructor function
+    *
+    *  Pulls the font class in for reference
+    *
+    *  @param array $args Contains setup parameters
+    *  @return void
+    *
+    */
     function __construct( $args ) {
-        $this->bonsai_WP_Google_Fonts =$args['bonsai_WP_Google_Fonts'];
+        $this->bonsai_WP_Google_Fonts = $args['bonsai_WP_Google_Fonts'];
     }
 
+    /*
+    *  Gets the fonts to enqueue
+    *
+    *  Pulls all fonts set in options pages and looks for post specific
+    *  ones if on a singular page.
+    *
+    *  @return array Font fields to enqueue
+    *
+    */
     function get_fonts_to_enqueue() {
         if( is_singular() ) {
             global $post;
@@ -34,12 +55,15 @@ class acf_google_font_selector_common {
         return $font_fields;
     }
 
-	/*
-	*  Build Google Font Request
-	*
-	*  Retrieves all font settings and builds a Google Font query
-	*
-	*/
+    /*
+    *  Enqueue Fonts
+    *
+    *  Builds the Google Font query and adds it to the header.
+    *
+    *  @uses $this->get_fonts_to_enqueue();
+    *  @return void
+    *
+    */
 	function google_font_enqueue(){
         $fonts = $this->get_fonts_to_enqueue();
 
@@ -82,6 +106,8 @@ class acf_google_font_selector_common {
 	 *
 	 * @param array $variants variant list
 	 * @param array $field field to display for
+     *
+     * @return void
 	 */
 	function display_variant_list( $variants = array(), $field ) {
 		$i = 1;
@@ -101,6 +127,8 @@ class acf_google_font_selector_common {
 	 *
 	 * @param array $subsets array of subsets
 	 * @param array $field field to display subsets for
+     *
+     * @return void
 	 */
 	function display_subset_list( $subsets = array(), $field ) {
 		$i = 1;
@@ -114,9 +142,14 @@ class acf_google_font_selector_common {
 	}
 
 
-	/**
-	 * Get the font details via AJAX
-	 */
+    /*
+    *  Get Font Detais
+    *
+    *  Displays selectable font details to the user.
+    *
+    *  @return void
+    *
+    */
 	function action_get_font_details() {
 		$details = array();
 		$field = json_decode( stripslashes( $_POST['data'] ), true );
@@ -139,6 +172,5 @@ class acf_google_font_selector_common {
 
 
 }
-
 
 ?>
