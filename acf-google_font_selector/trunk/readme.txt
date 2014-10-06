@@ -11,7 +11,7 @@ A field for Advanced Custom Fields which allows users to select Google fonts wit
 
 == Description ==
 
-The plugin allows you to create a Google font selector field with different options. The plugin also creates the font request in the theme header. Font variants and charsets can be selected separately to make font loading more flexible and optimized.
+This plugin allows you to create a Google font selector field with different options. The plugin also creates the font request in the theme header. Font variants and charsets can be selected separately to make font loading more flexible and optimized.
 
 Font options added to any options page will always be enqueues. Any fonts added to post pages will only be enqueued when that specific post is displayed.
 
