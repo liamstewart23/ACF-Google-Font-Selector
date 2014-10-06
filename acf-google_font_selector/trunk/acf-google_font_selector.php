@@ -19,6 +19,12 @@ load_plugin_textdomain( 'acf-google_font_selector', false, dirname( plugin_basen
 include( 'classes/Bonsai_WP_Google_Fonts/Bonsai_WP_Google_Fonts.php' );
 
 /**
+ * Include Common Functions
+ */
+include_once('acf-google_font_selector-common.php');
+
+
+/**
  * Include Field Type For ACF5
  */
 function include_field_types_google_font_selector( $version ) {
