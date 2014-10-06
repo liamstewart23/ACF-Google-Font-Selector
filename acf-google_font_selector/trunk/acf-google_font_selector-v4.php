@@ -45,7 +45,10 @@ class acf_field_google_font_selector extends acf_field {
 		parent::__construct();
 
 		add_action( 'wp_ajax_acfgfs_get_font_details', array( $this->common, 'action_get_font_details' ) );
-		add_action( 'wp_enqueue_scripts', array( $this->common, 'google_font_enqueue' ) );
+
+		if( !defined( 'ACFGFS_NOENQUEUE' ) ) {
+			add_action( 'wp_enqueue_scripts', array( $this->common, 'google_font_enqueue' ) );
+		}
 	}
 
 	/*
