@@ -44,6 +44,11 @@ The `ACFGFS_REFRESH` constant can also be defined, it controls how frequently th
 
 `define( 'ACFGFS_REFRESH', 259200 );`
 
+== Screenshots ==
+
+1. ACF control for field creation
+2. The user-facing font settings
+
 == Changelog ==
 
 = 2.1 =
