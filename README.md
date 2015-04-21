@@ -59,6 +59,6 @@ If you want to modify the fonts that are loaded on a page you can use the `acfgf
 If you like the plugin and you like helping others out there are a few things you can do:
 
 - **[Buy ACF Pro](http://www.advancedcustomfields.com/pro/)**
-- **[Review the plugin](https://wordpress.org/support/view/plugin-reviews/twitter-user-timelines)**
+- **[Review the plugin](https://wordpress.org/support/view/plugin-reviews/acf-google-font-selector-field)**
 - **Submit a translation** If you speak another language goodly, you can submit a language file, I'd be mighty thankful! Take a look at the lang directory to see what languages we already have. If a language isn't there create one and submit a pull request. If you have no idea what I'm talking about drop me a line and I'll help you out
 - **[Tip me on Gratipay](https://gratipay.com/danielpataki/)**
