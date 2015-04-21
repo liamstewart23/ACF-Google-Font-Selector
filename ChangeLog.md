@@ -1,3 +1,12 @@
+# 3.0.0 (2015-04-21)
+- Updated for WordPress 4.2
+- Font previews in the backend
+- Added Hungarian translation
+- Complete rewritten and better documented
+- Uses transients to store fonts
+- Better behaviour on font change
+
+
 # 2.2.1
 - Updated for WordPress 4.1
 
