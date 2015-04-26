@@ -1,4 +1,5 @@
 ### 3.0.1 (2015-04-26)
+- Added acfgfs/font_dropdown_array filter
 - Fixed a faulty font preview mechanism when multiple font options are added
 - Fixed an error when web safe fonts were selected
 

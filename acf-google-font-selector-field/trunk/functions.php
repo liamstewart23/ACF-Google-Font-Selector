@@ -115,6 +115,8 @@ function acfgfs_get_font_dropdown_array( $field = null ) {
 
     asort( $font_array );
 
+    $font_array = apply_filters( 'acfgfs/font_dropdown_array', $font_array );
+
     return $font_array;
 }
 
