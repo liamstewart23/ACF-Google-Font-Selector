@@ -289,7 +289,7 @@ function acfgfs_display_variant_list( $field, $new_font = null ) {
     }
 
     $font = acfgfs_get_font( $font );
-
+    $font['variants'] = (empty( $font['variants'] )) ? array() : $font['variants'];
     $i = 1;
     foreach( $font['variants'] as $variant ) :
         if( empty( $new_font ) ) {
@@ -334,6 +334,7 @@ function acfgfs_display_subset_list( $field, $new_font = null ) {
     }
 
     $font = acfgfs_get_font( $font );
+    $font['subsets'] = (empty( $font['subsets'] )) ? array() : $font['subsets'];
     $i = 1;
     foreach( $font['subsets'] as $subset ) :
         if( empty( $new_font ) ) {
