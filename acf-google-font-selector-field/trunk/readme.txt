@@ -76,7 +76,11 @@ If you want to modify the fonts that are loaded on a page you can use the `acfgf
 
 == Changelog ==
 
-= 3.0.0 =
+= 3.0.1 (2015-04-26) =
+* Fixed a faulty font preview mechanism when multiple font options are added
+* Fixed an error when web safe fonts were selected
+
+= 3.0.0 (2015-04-21) =
 * Updated for WordPress 4.2
 * Font previews in the backend
 * Added Hungarian translation
